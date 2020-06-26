@@ -5,4 +5,12 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Turkish-German Bot</name>
   <description>A bot for the telegram groups of TGU</description>
+  <dependencies>
+	<!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+	<dependency>
+	    <groupId>org.telegram</groupId>
+	    <artifactId>telegrambots</artifactId>
+	    <version>4.9</version>
+	</dependency>
+  </dependencies>
 </project>
