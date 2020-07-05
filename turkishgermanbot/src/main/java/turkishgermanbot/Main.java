@@ -18,6 +18,7 @@ public class Main {
 		// Register the bot
 		try {
 			botsApi.registerBot(new TurkishGermanBot());
+			System.out.println("Bot regisered succesfully");
 		} catch (TelegramApiRequestException e) {
 			
 			e.printStackTrace();
