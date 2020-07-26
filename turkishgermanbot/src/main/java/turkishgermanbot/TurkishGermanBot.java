@@ -5,8 +5,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+
+import java.util.concurrent.ExecutorService;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 
 
 
@@ -17,11 +21,12 @@ public class TurkishGermanBot extends TelegramLongPollingBot{
 	private String botToken = "1009439204:AAF7MqFI0WCCtRxf5sC-DxSv5HpjN603vns";
 	private String botUsername = "turkishgermanbot"; ///< Without '@'
 	private long batikansChatId = (long) 597803356; ///< For testing purposes
-	
-	
+	public static ExecutorService executor;
+	public static int count = 0;
 	public void onUpdateReceived(Update update) {
-				
 		//System.out.println(update.getInlineQuery().toString());
+		count++;
+		executor.submit(new UpdateReceiver(update, count));
 		if (update.hasMessage()) {
 			
 			try {
@@ -177,11 +182,9 @@ public class TurkishGermanBot extends TelegramLongPollingBot{
 	}
 	
 	public boolean sendPrivateMessage(long userId, String msgText) {
-		
-		do {
-			
-		}
 		return false;
+		
+
 		// do it on another thread
 	}
 	
