@@ -1,25 +1,23 @@
 package turkishgermanbot;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
-import org.telegram.telegrambots.meta.generics.BotSession;
+//import org.telegram.telegrambots.meta.generics.BotSession;
 
 public class Main {
-	public static int THREAD_PER_CORE = 10; ///< If the bot becomes widely used, maybe turn this into * 1000
+	private static final int THREAD_PER_CORE = 10; ///< If the bot becomes widely used, maybe turn this into * 1000
 	// Instantiate TelegramBotsApi and register the bot
 	public static void main(String[] args) {
 	
 		int numCores = Runtime.getRuntime().availableProcessors();
-		int numThreads = numCores * THREAD_PER_CORE;
+		int numThreads = numCores * THREAD_PER_CORE; ///< // We still need to have more threads working, because most of these threads just may be waiting for IO, so out cores may remain inactive...
+		// ^Because these are not CPU INTENSIVE tasks, these are IO INTENSIVE tasks.
 		
 		System.out.println("You are running this code on a system with " + numCores + " cores");
-		// We still need to have more threads working, because most of these threads just may be waiting for IO, so out cores may remain inactive...
-		// Because these are not CPU INTENSIVE tasks, these are IO INTENSIVE tasks.
 		
+
 		// Initialize Api Context
 		ApiContextInitializer.init();
 		

@@ -33,15 +33,11 @@ public class TurkishGermanBot extends TelegramLongPollingBot{
 	public void onUpdateReceived(Update update) {
 		//System.out.println(update.getInlineQuery().toString());
 		count++;
-		executor.submit(new UpdateReceiver(update, count));
+		executor.submit(new UpdateReceiver(this, update, count));
+
 		if (update.hasMessage()) {
 			
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
+		
 			Message msg = update.getMessage();
 			SendMessage toSend = new SendMessage();
 			boolean toExecute = false;
