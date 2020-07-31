@@ -1,10 +1,13 @@
 package turkishgermanbot;
 
 
+
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 //import org.telegram.telegrambots.meta.generics.BotSession;
+
+import utilities.DBConnection;
 
 public class Main {
 	private static final int THREAD_PER_CORE = 10; ///< If the bot becomes widely used, maybe turn this into * 1000
@@ -17,7 +20,11 @@ public class Main {
 		
 		System.out.println("You are running this code on a system with " + numCores + " cores");
 		
+		
 
+		
+		
+		
 		// Initialize Api Context
 		ApiContextInitializer.init();
 		

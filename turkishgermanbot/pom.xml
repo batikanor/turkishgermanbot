@@ -12,5 +12,12 @@
 	    <artifactId>telegrambots</artifactId>
 	    <version>4.9</version>
 	</dependency>
+		<!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
+	<dependency>
+		<groupId>org.hsqldb</groupId>
+		<artifactId>hsqldb</artifactId>
+		<version>2.5.1</version>
+		<!--<scope>test</scope>-->
+	</dependency>
   </dependencies>
 </project>

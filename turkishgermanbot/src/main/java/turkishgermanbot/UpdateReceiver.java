@@ -5,11 +5,14 @@ import java.util.List;
 
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Dice;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import utilities.DBConnection;
 
 public class UpdateReceiver implements Runnable {
 	
@@ -19,6 +22,7 @@ public class UpdateReceiver implements Runnable {
 	private String msgStr;
 	private long chatId;
 	private long fromId;
+	private int msgId;
 	private TurkishGermanBot tgb; ///< This isnt that big of a deal, it was passed by reference anyways...
 	//^ In Java everything except boxed types, native types and strings is passed by reference. Boxed types, native types and strings are all immutable and are passed by value
 	 
@@ -31,13 +35,39 @@ public class UpdateReceiver implements Runnable {
 	} 
 
 	public void run() {
+		System.out.println("DENEMEMSG:" + update.getMessage().getText());
+		System.out.println(update.toString());
 		
 		if (update.hasMessage()) {
 			updateMsg = update.getMessage();
 			chatId = updateMsg.getChatId();
+			msgId = updateMsg.getMessageId();
 			fromId = updateMsg.getFrom().getId();
 			
-			if (fromId == chatId) {
+			String deneme = id + ":::" + String.valueOf(chatId);
+			DBConnection.addGroupToUnion(chatId, deneme);
+			
+			System.out.println(updateMsg);
+			
+			if (updateMsg.hasDice()) {
+				Dice dice = updateMsg.getDice();
+				int score = dice.getValue();
+				String emoji = dice.getEmoji();
+				
+				System.out.println(emoji.length());
+				
+				SendMessage res = new SendMessage()
+						.setText(emoji + " skorunuz: " + score)
+						.setChatId(chatId)
+						.setReplyToMessageId(msgId);
+				try {
+					tgb.execute(res);
+				} catch (TelegramApiException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else if (fromId == chatId) {
 				// Private messages!
 				if (updateMsg.hasText()) {
 					msgStr = updateMsg.getText();
@@ -59,8 +89,7 @@ public class UpdateReceiver implements Runnable {
 
 		}
 		
-		System.out.println("DENEMEMSG" + update.getMessage().getText());
-		System.out.println(update.toString());
+
 	}
 	 
 	
@@ -95,6 +124,7 @@ public class UpdateReceiver implements Runnable {
 				.setChatId(chatId)
 				.setText(txt)
 				.setReplyMarkup(markupInline);
+				
 				
 		try {
 			tgb.execute(sMsg);
