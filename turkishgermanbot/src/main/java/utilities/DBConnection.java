@@ -1,5 +1,8 @@
 package utilities;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -40,25 +43,76 @@ public class DBConnection {
 		
 		try {
 			ps = con.prepareStatement("INSERT INTO GROUPSUNIONS(GROUPID, UNIONNAME) VALUES(?, ?)");
-			System.out.println("upd: " + groupId);
+			
 			ps.setLong(1, groupId);
 			ps.setString(2, unionName);
 			ps.executeUpdate();
 			con.commit();
 			con.close();
+			//Connection con2 = connect();
+			//PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 GROUPID FROM GROUPSUNIONS WHERE UNIONNAME = ?");
+			//ps2.setString(1, unionName);
+			//ResultSet rs = ps2.executeQuery();
+			//if (rs.next()) {
+			//	long h = rs.getLong("GROUPID");
+			//	System.out.println("cvp: " + h);
+			//	System.out.println(groupId == h);
+			//}
+			//con2.close();
+			return true;
+	
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+    }
+    public static boolean addFilterToUnion(String filter, String answer, String unionName) {
+    	
+    	Connection con = connect();
+		PreparedStatement ps;
+
+		
+		try {
+			ps = con.prepareStatement("INSERT INTO UNIONFILTERS(FILTERQUESTION, FILTERANSWER, UNIONNAME) VALUES(?, ?, ?)");
+			ps.setString(1, filter);
+			Clob clob = con.createClob();
+			clob.setString(1, answer);
+			ps.setClob(2, clob);
+			ps.setString(3, unionName);
+			ps.executeUpdate();
+			con.commit();
+			con.close();
 			Connection con2 = connect();
-			PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 GROUPID FROM GROUPSUNIONS WHERE UNIONNAME = ?");
+			PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 FILTERANSWER FROM UNIONFILTERS WHERE UNIONNAME = ? AND FILTERQUESTION = ?");
 			ps2.setString(1, unionName);
+			ps2.setString(2, filter);
 			ResultSet rs = ps2.executeQuery();
 			if (rs.next()) {
-				long h = rs.getLong("GROUPID");
-				System.out.println("cvp: " + h);
-				System.out.println(groupId == h);
+				Clob cl = rs.getClob("FILTERANSWER");
+				Reader r = cl.getCharacterStream();
+				StringBuffer buff = new StringBuffer();
+				int ch;
+				while ((ch = r.read()) != -1) {
+					buff.append("" + (char)ch);
+				}
+				String st = buff.toString();
+				System.out.println("cvp: " + st);
+				
+			} else {
+				System.out.println("wtf?");
 			}
 			con2.close();
 			return true;
+	
+			
 			
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -70,7 +124,7 @@ public class DBConnection {
     /*
      
     CREATE TABLE PUBLIC.UNIONS
-   	(UNIONNAME VARCHAR(130) NOT NULL,
+   	(UNIONNAME NVARCHAR(100) NOT NULL,
     OWNERID INTEGER NOT NULL,
     PASSWORDHASH BINARY(16) NOT NULL,
     PRIMARY KEY (UNIONNAME))
@@ -78,10 +132,15 @@ public class DBConnection {
 	CREATE TABLE PUBLIC.GROUPSUNIONS
    	(INDEXID INTEGER NOT NULL IDENTITY,
    	GROUPID BIGINT NOT NULL,
-    UNIONNAME VARCHAR(130) NOT NULL,
+    UNIONNAME NVARCHAR(100) NOT NULL,
     PRIMARY KEY (INDEXID))
    
-    
+    CREATE TABLE PUBLIC.UNIONFILTERS
+   	(FILTERID INTEGER NOT NULL IDENTITY,
+   	FILTERQUESTION NVARCHAR(200) NOT NULL,
+   	FILTERANSWER CLOB(5000) NOT NULL,
+    UNIONNAME NVARCHAR(100) NOT NULL,
+    PRIMARY KEY (FILTERID))
      */
 
     // Table for groups within unions
@@ -89,8 +148,8 @@ public class DBConnection {
     
     
     // Table for filters for unions
-    // UNIONFILTERS: FILTERID FILTERQUESTION FILTERANSWER UNIONID
-    
+    // UNIONFILTERS: FILTERID FILTERQUESTION FILTERANSWER UNIONNAME ///< TELEGRAM MESSAGE CHARACTER LIMIT IS 4096
+    /// FILTERS SHOULD BE MARKDOWN ENABLED
     /// Whenever a new message comes, check if group is in union, if so, check with that UNIONID and FILTERQUESTION what FILTERANSWER is...
     
     

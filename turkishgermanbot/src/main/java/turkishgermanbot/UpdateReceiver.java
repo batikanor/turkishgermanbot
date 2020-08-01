@@ -35,6 +35,7 @@ public class UpdateReceiver implements Runnable {
 	} 
 
 	public void run() {
+
 		System.out.println("DENEMEMSG:" + update.getMessage().getText());
 		System.out.println(update.toString());
 		
@@ -43,6 +44,8 @@ public class UpdateReceiver implements Runnable {
 			chatId = updateMsg.getChatId();
 			msgId = updateMsg.getMessageId();
 			fromId = updateMsg.getFrom().getId();
+			
+			
 			
 			String deneme = id + ":::" + String.valueOf(chatId);
 			DBConnection.addGroupToUnion(chatId, deneme);
@@ -71,6 +74,7 @@ public class UpdateReceiver implements Runnable {
 				// Private messages!
 				if (updateMsg.hasText()) {
 					msgStr = updateMsg.getText();
+					DBConnection.addFilterToUnion("denemefilter" + id, msgStr, "denemeUnion" + id);
 					
 					if (msgStr.equals("/start") || msgStr.toLowerCase().equals("help") || msgStr.substring(1).toLowerCase().equals("help")) {
 						sendTxt("I'm listing my functionalities!");
