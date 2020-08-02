@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import objects.DiceStats;
+
 public class DBConnection {
 	private static final String Driver = "org.hsqldb.jdbcDriver";
     private static final String user = "TurkishGermanBot";
@@ -48,9 +50,9 @@ public class DBConnection {
 			ps.setString(2, unionName);
 			ps.executeUpdate();
 			con.commit();
-			con.close();
-			//Connection con2 = connect();
-			//PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 GROUPID FROM GROUPSUNIONS WHERE UNIONNAME = ?");
+
+
+			//PreparedStatement ps2 = con.prepareStatement("SELECT TOP 1 GROUPID FROM GROUPSUNIONS WHERE UNIONNAME = ?");
 			//ps2.setString(1, unionName);
 			//ResultSet rs = ps2.executeQuery();
 			//if (rs.next()) {
@@ -58,7 +60,8 @@ public class DBConnection {
 			//	System.out.println("cvp: " + h);
 			//	System.out.println(groupId == h);
 			//}
-			//con2.close();
+
+			con.close();
 			return true;
 	
 			
@@ -85,43 +88,103 @@ public class DBConnection {
 			ps.executeUpdate();
 			con.commit();
 			con.close();
-			Connection con2 = connect();
-			PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 FILTERANSWER FROM UNIONFILTERS WHERE UNIONNAME = ? AND FILTERQUESTION = ?");
-			ps2.setString(1, unionName);
-			ps2.setString(2, filter);
-			ResultSet rs = ps2.executeQuery();
-			if (rs.next()) {
-				Clob cl = rs.getClob("FILTERANSWER");
-				Reader r = cl.getCharacterStream();
-				StringBuffer buff = new StringBuffer();
-				int ch;
-				while ((ch = r.read()) != -1) {
-					buff.append("" + (char)ch);
-				}
-				String st = buff.toString();
-				System.out.println("cvp: " + st);
-				
-			} else {
-				System.out.println("wtf?");
-			}
-			con2.close();
+			//Connection con2 = connect();
+			//PreparedStatement ps2 = con2.prepareStatement("SELECT TOP 1 FILTERANSWER FROM UNIONFILTERS WHERE UNIONNAME = ? AND FILTERQUESTION = ?");
+			//ps2.setString(1, unionName);
+			//ps2.setString(2, filter);
+			//ResultSet rs = ps2.executeQuery();
+			//if (rs.next()) {
+			//	Clob cl = rs.getClob("FILTERANSWER");
+			//	Reader r = cl.getCharacterStream();
+			//	StringBuffer buff = new StringBuffer();
+			//	int ch;
+			//	while ((ch = r.read()) != -1) {
+			//		buff.append("" + (char)ch);
+			//	}
+			//	String st = buff.toString();
+			//	System.out.println("cvp: " + st);
+			//	
+			//} else {
+			//	System.out.println("wtf?");
+			//}
+			//con2.close();
 			return true;
 	
 			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		return false;
 
+    }
+    
+    public static DiceStats storeAndGetDiceStats(String emoji, long userId, int score) {
+    	//At total you've scored this and that for this emoji
+    	//hsql already is unicode encoded so utf-8 emojis can be stored. emojis are 2chars long but some new generation ones may be 3 therefore I'll just have place for 4 on the database
+    	
+    	Connection con = connect();
+		PreparedStatement ps;
+		ResultSet rs;
+		int attempts;
+		float avg;
+		try {
+			ps = con.prepareStatement("SELECT AVERAGE, ATTEMPTS FROM DICESCORES WHERE EMOJI = ? AND USERID = ?");
+			ps.setString(1, emoji);
+			ps.setLong(2, userId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				attempts = rs.getInt("ATTEMPTS");
+				avg = rs.getFloat("AVERAGE");
+				avg = ((attempts * avg) + score) / (++attempts);
+				
+
+				PreparedStatement ps3 = con.prepareStatement("UPDATE DICESCORES SET AVERAGE = ?, ATTEMPTS = ? WHERE USERID = ? AND EMOJI = ?");
+
+
+				ps3.setFloat(1, avg);
+				ps3.setInt(2, attempts);		
+				ps3.setLong(3, userId);
+				ps3.setString(4, emoji);
+				
+				ps3.executeUpdate();
+			} else {
+				// Row has not been created yet!
+				attempts = 1;
+				avg = (float)score;
+
+				PreparedStatement ps2 = con.prepareStatement("INSERT INTO DICESCORES(USERID, EMOJI, AVERAGE, ATTEMPTS) VALUES(?, ?, ?, ?)");
+				ps2.setLong(1, userId);
+				ps2.setString(2, emoji);
+				ps2.setFloat(3, avg);
+				ps2.setInt(4, attempts);
+				ps2.executeUpdate();
+			}
+
+			con.commit();
+			con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		return new DiceStats(attempts, avg);
     }
     
     // Table for unions
     // UNIONS: UnionName OwnerID Passwordhash ///< so if not owner, ask for password
     /*
+     
+    
+    CREATE TABLE PUBLIC.DICESCORES
+   	(SCOREID INTEGER NOT NULL IDENTITY,
+    USERID BIGINT NOT NULL,
+    EMOJI NVARCHAR(4) NOT NULL,
+    AVERAGE FLOAT NOT NULL,
+    ATTEMPTS INTEGER NOT NULL,
+    PRIMARY KEY (SCOREID))
+    /// Actually emoji takes up only 2 length but i did 4 anyways
      
     CREATE TABLE PUBLIC.UNIONS
    	(UNIONNAME NVARCHAR(100) NOT NULL,
