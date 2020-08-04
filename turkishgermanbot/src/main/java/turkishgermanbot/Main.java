@@ -17,7 +17,13 @@ public class Main {
 	public static String botToken;
 	public static String botUsername;
 	public static long batikansChatId;
-	
+
+	public static String dbDriver;
+    public static String dbUser;
+    public static String dbPwd;
+    public static String dbUrl;
+    
+    
 	private static final int THREAD_PER_CORE = 10; /// < If the bot becomes widely used, maybe turn this into * 1000
 
 	// Instantiate TelegramBotsApi and register the bot
@@ -43,7 +49,11 @@ public class Main {
 		botToken = prop.getProperty("botToken");
 		botUsername = prop.getProperty("botUsername");///< Without '@'
 		batikansChatId = Long.parseLong(prop.getProperty("batikansChatId")); ///< For testing purposes
-
+		
+		dbDriver = prop.getProperty("dbDriver");
+		dbUser = prop.getProperty("dbUser");
+		dbPwd = prop.getProperty("dbPwd");
+		dbUrl = prop.getProperty("dbUrl");
 	   
 
 		// Initialize Api Context

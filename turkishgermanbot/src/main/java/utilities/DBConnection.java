@@ -10,20 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import objects.DiceStats;
+import turkishgermanbot.Main;
 
 public class DBConnection {
-	private static final String Driver = "org.hsqldb.jdbcDriver";
-    private static final String user = "TurkishGermanBot";
-    private static final String pwd = "92nezaket239ff";
-    private static final String dbPath = "~/DBTurkishGermanBot";
-    private static final String url = "jdbc:hsqldb:file:" + dbPath;
+
     
     public static Connection connect() {
 		try {
 			System.out.println("Veritabanı'na bağlanmaya çalışılınıyor");
 			
-			Class.forName(Driver);
-			Connection con = DriverManager.getConnection(url, user, pwd);
+			Class.forName(Main.dbDriver);
+			Connection con = DriverManager.getConnection(Main.dbUrl, Main.dbUser, Main.dbPwd);
 			return con;
 			
 		}catch(ClassNotFoundException e) {
