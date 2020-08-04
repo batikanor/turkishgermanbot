@@ -45,7 +45,6 @@ public class Main {
 	  
 		
 		// If you are helping develop this bot, please ensure that you do not share the following private variables with anyone! (the file including them is to be always ignored while pushing!)
-		
 		botToken = prop.getProperty("botToken");
 		botUsername = prop.getProperty("botUsername");///< Without '@'
 		batikansChatId = Long.parseLong(prop.getProperty("batikansChatId")); ///< For testing purposes

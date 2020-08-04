@@ -89,8 +89,8 @@ public class UpdateReceiver implements Runnable {
 			fromId = updateMsg.getFrom().getId();
 			
 			
-			String deneme = id + ":::" + String.valueOf(chatId);
-			DBConnection.addGroupToUnion(chatId, deneme);
+			//String deneme = id + ":::" + String.valueOf(chatId);
+			//DBConnection.addGroupToUnion(chatId, deneme);
 			
 			System.out.println(updateMsg);
 			
@@ -112,7 +112,7 @@ public class UpdateReceiver implements Runnable {
 				//System.out.println(emoji.length()); ///< I guess always 3
 				
 				SendMessage res = new SendMessage()
-						.setText(emoji + "Skorunuz: " + score + "\nOrtalamanız: " + diceStats.average + "\nToplam deneme sayınız: " + diceStats.attempts)
+						.setText(emoji + rb.getString("yourScore") + ": " + score + "\n" + rb.getString("yourAverage") + ": " + diceStats.average + "\n" + rb.getString("attemptCount") + ": " + diceStats.attempts)
 						.setChatId(chatId)
 						.setReplyToMessageId(msgId);
 				try {

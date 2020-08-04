@@ -17,11 +17,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TurkishGermanBot extends TelegramLongPollingBot{
 
-	
-	// If you are helping develop this bot, please ensure that you do not share the following private variables with anyone!
-	//private String botToken = "1009439204:AAF7MqFI0WCCtRxf5sC-DxSv5HpjN603vns";
-	//private String botUsername = "turkishgermanbot"; ///< Without '@'
-	//private long batikansChatId = (long) 597803356; ///< For testing purposes
 	private ExecutorService executor;
 	private int count = 0;
 	
