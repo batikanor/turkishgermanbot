@@ -12,12 +12,44 @@
 	    <artifactId>telegrambots</artifactId>
 	    <version>4.9</version>
 	</dependency>
-		<!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
+	
+	<!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
 	<dependency>
 		<groupId>org.hsqldb</groupId>
 		<artifactId>hsqldb</artifactId>
 		<version>2.5.1</version>
 		<!--<scope>test</scope>-->
 	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-sheets -->
+	<dependency>
+	    <groupId>com.google.apis</groupId>
+	    <artifactId>google-api-services-sheets</artifactId>
+	    <version>v4-rev614-1.18.0-rc</version>
+	</dependency>
+		
+	<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client-jackson2 -->
+	<dependency>
+	    <groupId>com.google.api-client</groupId>
+	    <artifactId>google-api-client-jackson2</artifactId>
+	    <version>1.30.10</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client-java6 -->
+	<dependency>
+	    <groupId>com.google.api-client</groupId>
+	    <artifactId>google-api-client-java6</artifactId>
+	    <version>1.30.10</version>
+	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
+	<dependency>
+	    <groupId>com.google.oauth-client</groupId>
+	    <artifactId>google-oauth-client-jetty</artifactId>
+	    <version>1.31.0</version>
+	</dependency>
+	
+
+	
   </dependencies>
 </project>

@@ -1,13 +1,13 @@
 package turkishgermanbot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import org.telegram.telegrambots.bots.DefaultBotOptions;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -18,13 +18,17 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import objects.AdayFormResults;
 import objects.DiceStats;
 import utilities.DBConnection;
+import utilities.SheetsConnection;
+
 import static java.lang.Math.toIntExact;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+
 public class UpdateReceiver implements Runnable {
 	
 
@@ -77,7 +81,7 @@ public class UpdateReceiver implements Runnable {
 		ResourceBundle rb = ResourceBundle.getBundle("MessagesBundle");
 		Locale.setDefault(new Locale(language, country));
 		
-		System.out.println(rb.getString("name"));
+		//System.out.println(rb.getString("name"));
 		
 
 		System.out.println(update.toString());
@@ -93,6 +97,8 @@ public class UpdateReceiver implements Runnable {
 			//DBConnection.addGroupToUnion(chatId, deneme);
 			
 			System.out.println(updateMsg);
+			
+			
 			
 			if (updateMsg.hasDice()) {
 				
@@ -121,6 +127,70 @@ public class UpdateReceiver implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			} else if (updateMsg.hasText()) {
+				// Text messages, private or group... both...
+				msgStr = updateMsg.getText();
+				List<String> departments = new ArrayList<String>();
+				
+				if (msgStr.startsWith("!adaybilgiformu")) {
+					for (String dep : Main.DEPARTMENTS) {
+						if(msgStr.substring(15).toLowerCase().contains(dep.toLowerCase().subSequence(0, 3))) {
+							continue;
+						} else {
+							System.out.println(msgStr.substring(15).toLowerCase());
+							System.out.println(dep.toLowerCase().subSequence(0, 3));
+							departments.add(dep);
+							System.out.println(dep);
+						}
+					}
+					if (departments.size() == Main.DEPARTMENTS.length) {
+						departments.clear();
+						
+					}
+	
+					try {
+					
+						String currentDepartment = null;
+						boolean started = false;
+						List<AdayFormResults> afrl = SheetsConnection.returnAdayFormResults();
+						String toSend = "BOLUM : SIRALAMA\n";
+						//String toSend = "ZAMAN///ALAN///BOLUM///DIGER_BOLUMLER///SIRALAMA///OZEL_KONTENJAN_DURUMU///USTTEKI_BIR_TERCIHE_YERLESME_OLASILIGI///TERCIH_SEBEBI\n";
+						for (AdayFormResults afr : afrl) {
+							if (started == false) {
+								started = true;
+								departments.add(afr.departmentChoice);
+								currentDepartment = afr.departmentChoice;
+							}
+							else if (!departments.contains(afr.departmentChoice) ) {
+								System.out.println(toSend.length());
+								sendTxt(toSend);
+								toSend = "\nBOLUM : SIRALAMA : USTE YAZILAN TUTMA IHTIMALI\n";
+								departments.add(afr.departmentChoice);
+								currentDepartment = afr.departmentChoice;
+							} else {
+								if (!currentDepartment.contentEquals(afr.departmentChoice)) {
+									continue;
+								}
+							}
+							//toSend += "\n" + afr.timeStamp + "///" + afr.field + "///" + afr.departmentChoice + "///" + afr.otherChoices + "///" + afr.ranking + "///" + afr.specialQuota + "///" + afr.Unlikeliness + "///" + afr.reason;
+							toSend += "\n" + afr.departmentChoice + " : " + afr.ranking + " : " + afr.Unlikeliness;
+							
+						}
+						System.out.println(toSend.length());
+						sendTxt(toSend);
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (GeneralSecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+				
+				
 			}
 			else if (fromId == chatId) {
 				// Private messages!
@@ -131,7 +201,7 @@ public class UpdateReceiver implements Runnable {
 					msgStr = updateMsg.getText();
 					
 					
-					DBConnection.addFilterToUnion("denemefilter" + id, msgStr, "denemeUnion" + id);
+					//DBConnection.addFilterToUnion("denemefilter" + id, msgStr, "denemeUnion" + id);
 					
 					if (msgStr.equals("/start") || msgStr.toLowerCase().equals("help") || msgStr.substring(1).toLowerCase().equals("help")) {
 						sendTxt("I'm listing my functionalities!");
@@ -222,6 +292,7 @@ public class UpdateReceiver implements Runnable {
 		}
 		return false;
 	}
+	
 	
 	
 }

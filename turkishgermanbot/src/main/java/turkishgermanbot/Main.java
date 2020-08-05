@@ -2,17 +2,25 @@ package turkishgermanbot;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+
 //import org.telegram.telegrambots.meta.generics.BotSession;
 
 
 public class Main {
 	public static final String[] LANGUAGES = { "tr", "en", "de" };
 	public static final String[] COUNTRIES = { "TR", "US", "DE" };
+	public static final String[] DEPARTMENTS = { "Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği",
+			"Endüstri Mühendisliği", "Hukuk",
+			"İktisat", "İnşaat Mühendisliği", "İşletme", "Kültür ve İletişim Bilimleri", "Makine Mühendisliği",
+			"Malzeme Bilimi ve Teknolojileri", "Moleküler Biyoteknoloji", "Siyaset ve Uluslararası İlişkiler", "Mekatronik Mühendisliği"};
+	
+	
 	
 	public static String botToken;
 	public static String botUsername;
@@ -23,6 +31,8 @@ public class Main {
     public static String dbPwd;
     public static String dbUrl;
     
+    public static String SPREADSHEET_ID;
+    public static String APPLICATION_NAME;
     
 	private static final int THREAD_PER_CORE = 10; /// < If the bot becomes widely used, maybe turn this into * 1000
 
@@ -37,7 +47,7 @@ public class Main {
 
 		System.out.println("You are running this code on a system with " + numCores + " cores");
 		
-		String keysFileLoc = "SECRET_KEYS/Keys.properties";
+		String keysFileLoc = "src/main/resources/SECRET_KEYS/Keys.properties";
 		FileInputStream fis = new FileInputStream(keysFileLoc);
 		Properties prop = new Properties();
 		prop.load(fis);
@@ -54,7 +64,10 @@ public class Main {
 		dbPwd = prop.getProperty("dbPwd");
 		dbUrl = prop.getProperty("dbUrl");
 	   
-
+		SPREADSHEET_ID = prop.getProperty("SPREADSHEET_ID");
+		APPLICATION_NAME = prop.getProperty("APPLICATION_NAME");
+		
+		
 		// Initialize Api Context
 		ApiContextInitializer.init();
 
@@ -72,6 +85,8 @@ public class Main {
 
 			e.printStackTrace();
 		}
+
+		
 
 	}
 
