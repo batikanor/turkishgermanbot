@@ -26,6 +26,7 @@ import utilities.SheetsConnection;
 import static java.lang.Math.toIntExact;
 
 import java.io.IOException;
+import java.lang.System.Logger;
 import java.security.GeneralSecurityException;
 
 
@@ -83,7 +84,7 @@ public class UpdateReceiver implements Runnable {
 		
 		//System.out.println(rb.getString("name"));
 		
-
+		
 		System.out.println(update.toString());
 		
 		if (update.hasMessage()) {
@@ -137,10 +138,8 @@ public class UpdateReceiver implements Runnable {
 						if(msgStr.substring(15).toLowerCase().contains(dep.toLowerCase().subSequence(0, 3))) {
 							continue;
 						} else {
-							System.out.println(msgStr.substring(15).toLowerCase());
-							System.out.println(dep.toLowerCase().subSequence(0, 3));
+
 							departments.add(dep);
-							System.out.println(dep);
 						}
 					}
 					if (departments.size() == Main.DEPARTMENTS.length) {
@@ -162,7 +161,7 @@ public class UpdateReceiver implements Runnable {
 								currentDepartment = afr.departmentChoice;
 							}
 							else if (!departments.contains(afr.departmentChoice) ) {
-								System.out.println(toSend.length());
+								//System.out.println(toSend.length());
 								sendTxt(toSend);
 								toSend = "\nBOLUM : SIRALAMA : USTE YAZILAN TUTMA IHTIMALI\n";
 								departments.add(afr.departmentChoice);
@@ -176,7 +175,7 @@ public class UpdateReceiver implements Runnable {
 							toSend += "\n" + afr.departmentChoice + " : " + afr.ranking + " : " + afr.Unlikeliness;
 							
 						}
-						System.out.println(toSend.length());
+						//System.out.println(toSend.length());
 						sendTxt(toSend);
 						
 					} catch (IOException e) {
