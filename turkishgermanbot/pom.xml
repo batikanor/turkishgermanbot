@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ubiduction.turkishgermanbot</groupId>
   <artifactId>turkishgermanbot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Turkish-German Bot</name>
   <description>A bot for the telegram groups of TGU</description>
   <dependencies>
@@ -50,22 +50,23 @@
 	</dependency>
   </dependencies>
   
-  
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-			<version>3.0.0</version>
-		 	<configuration>
-		    <descriptorRefs>
-		    	<descriptorRef>jar-with-dependencies</descriptorRef>
-		    </descriptorRefs>
-		    <finalName>TurkishGermanBotJar</finalName>
-		  	</configuration>
-      		</plugin>
-    	</plugins>
-	</build>
-  
-  
-  
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-assembly-plugin</artifactId>
+  			<version>3.3.0</version>
+	        <configuration>
+          		<descriptorRefs>
+            		<descriptorRef>jar-with-dependencies</descriptorRef>
+          		</descriptorRefs>
+        	</configuration>
+  		</plugin>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-compiler-plugin</artifactId>
+  			<version>3.8.1</version>
+  		</plugin>
+  	</plugins>
+  </build>
 </project>
