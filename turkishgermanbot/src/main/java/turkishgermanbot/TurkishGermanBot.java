@@ -31,13 +31,11 @@ public class TurkishGermanBot extends TelegramLongPollingBot{
 	
 	
 	public String getBotUsername() {
-		System.out.println(Main.botUsername);
 		return Main.botUsername;
 	}
 
 	@Override
 	public String getBotToken() {
-		System.out.println(Main.botToken);
 		return Main.botToken;
 	}
 

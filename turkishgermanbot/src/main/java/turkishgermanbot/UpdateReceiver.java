@@ -38,7 +38,6 @@ public class UpdateReceiver implements Runnable {
 		START,
 		THIS,
 		THAT
-	
 	}
 	
 	public static final Random RANDOM = new Random();
@@ -79,8 +78,8 @@ public class UpdateReceiver implements Runnable {
 		String country = Main.COUNTRIES[randInt];
 
 
-		ResourceBundle rb = ResourceBundle.getBundle("MessagesBundle");
-		Locale.setDefault(new Locale(language, country));
+		ResourceBundle rb = ResourceBundle.getBundle("MessagesBundle", new Locale(language, country));
+		
 		
 		//System.out.println(rb.getString("name"));
 		
@@ -133,9 +132,9 @@ public class UpdateReceiver implements Runnable {
 				msgStr = updateMsg.getText();
 				List<String> departments = new ArrayList<String>();
 				
-				if (msgStr.startsWith("!adaybilgiformu")) {
+				if (msgStr.substring(1).startsWith("adaybilgiformu")) {
 					for (String dep : Main.DEPARTMENTS) {
-						if(msgStr.substring(15).toLowerCase().contains(dep.toLowerCase().subSequence(0, 3))) {
+						if(msgStr.substring(15).toLowerCase(new Locale("tr", "TR")).contains(dep.toLowerCase(new Locale("tr", "TR")).subSequence(0, 3))) {
 							continue;
 						} else {
 
@@ -152,7 +151,7 @@ public class UpdateReceiver implements Runnable {
 						String currentDepartment = null;
 						boolean started = false;
 						List<AdayFormResults> afrl = SheetsConnection.returnAdayFormResults();
-						String toSend = "BOLUM : SIRALAMA\n";
+						String toSend = "TAÜ Gayriresmi Aday Bilgi Formu'ndan alınan güncel verilerdir.\n";
 						//String toSend = "ZAMAN///ALAN///BOLUM///DIGER_BOLUMLER///SIRALAMA///OZEL_KONTENJAN_DURUMU///USTTEKI_BIR_TERCIHE_YERLESME_OLASILIGI///TERCIH_SEBEBI\n";
 						for (AdayFormResults afr : afrl) {
 							if (started == false) {
@@ -163,7 +162,7 @@ public class UpdateReceiver implements Runnable {
 							else if (!departments.contains(afr.departmentChoice) ) {
 								//System.out.println(toSend.length());
 								sendTxt(toSend);
-								toSend = "\nBOLUM : SIRALAMA : USTE YAZILAN TUTMA IHTIMALI\n";
+								toSend = "\n" + afr.departmentChoice + "\nSIRALAMA : BAŞKA YERE YERLEŞME İHTİMALİ : ÖZEL KONTENJAN DURUMU : TERCİH SEBEBİ\n";
 								departments.add(afr.departmentChoice);
 								currentDepartment = afr.departmentChoice;
 							} else {
@@ -172,7 +171,7 @@ public class UpdateReceiver implements Runnable {
 								}
 							}
 							//toSend += "\n" + afr.timeStamp + "///" + afr.field + "///" + afr.departmentChoice + "///" + afr.otherChoices + "///" + afr.ranking + "///" + afr.specialQuota + "///" + afr.Unlikeliness + "///" + afr.reason;
-							toSend += "\n" + afr.departmentChoice + " : " + afr.ranking + " : " + afr.Unlikeliness;
+							toSend += "\n" + afr.ranking + " : " + afr.Unlikeliness + " : " + afr.specialQuota + " : " + afr.reason.substring(0, 10) + "...";
 							
 						}
 						//System.out.println(toSend.length());
