@@ -134,7 +134,7 @@ public class UpdateReceiver implements Runnable {
 				
 				if (msgStr.substring(1).startsWith("adaybilgiformu")) {
 					for (String dep : Main.DEPARTMENTS) {
-						if(msgStr.substring(15).toLowerCase(new Locale("tr", "TR")).contains(dep.toLowerCase(new Locale("tr", "TR")).subSequence(0, 3))) {
+						if(msgStr.substring(15).toLowerCase(new Locale("tr", "TR")).contains(dep.toLowerCase(new Locale("tr", "TR")).subSequence(0, 4))) {
 							continue;
 						} else {
 
@@ -151,7 +151,7 @@ public class UpdateReceiver implements Runnable {
 						String currentDepartment = null;
 						boolean started = false;
 						List<AdayFormResults> afrl = SheetsConnection.returnAdayFormResults();
-						String toSend = "TAÜ Gayriresmi Aday Bilgi Formu'ndan alınan güncel verilerdir.\n";
+						String toSend = "TAÜ Gayriresmi Aday Bilgi Formu'ndan alınan güncel verilerdir.\nFormu doldurmak veya sıralama tahmini yapmak için @tauaday da yazılanları okuyunuz :)\n";
 						//String toSend = "ZAMAN///ALAN///BOLUM///DIGER_BOLUMLER///SIRALAMA///OZEL_KONTENJAN_DURUMU///USTTEKI_BIR_TERCIHE_YERLESME_OLASILIGI///TERCIH_SEBEBI\n";
 						for (AdayFormResults afr : afrl) {
 							if (started == false) {
@@ -190,7 +190,7 @@ public class UpdateReceiver implements Runnable {
 				
 				
 			}
-			else if (fromId == chatId) {
+			if (fromId == chatId) {
 				// Private messages!
 				
 				// Check the database to see which chat state we are in with the user
@@ -202,9 +202,24 @@ public class UpdateReceiver implements Runnable {
 					//DBConnection.addFilterToUnion("denemefilter" + id, msgStr, "denemeUnion" + id);
 					
 					if (msgStr.equals("/start") || msgStr.toLowerCase().equals("help") || msgStr.substring(1).toLowerCase().equals("help")) {
-						sendTxt("I'm listing my functionalities!");
-						sendOneButton("Click to see a random number", "Random Number");
-
+						//sendTxt(")
+						for (int i = 0; i < Main.LANGUAGES.length; i++) {
+							String lang = Main.LANGUAGES[i];
+							String coun = Main.COUNTRIES[i];
+							System.out.println(111);
+							sendTxt(lang.toUpperCase() + ": " + ResourceBundle.getBundle("MessagesBundle", new Locale(lang, coun)).getString("whyHere"));
+						}
+						
+						sendTxt("Im still under logical development, hit @batikanor up for ideas.");
+						sendOneButton("TR: TAÜ Aday Grupları", "TAUADAY");
+						sendOneButton("EN: TGU English Chatroom", "TAUENGLISH");
+						sendOneButton("ALL: TAÜ/TDU/TGU Public Groups", "TAUPUBLIC");
+						sendOneButton("ALL: TAÜ/TDU/TGU Private Groups (Only students or other university associates are allowed)", "TAUPRIVATE");
+						sendOneButton("ALL: Click to see a random number", "Random Number");
+					
+						
+						
+						
 					}
 				}
 				
@@ -248,6 +263,9 @@ public class UpdateReceiver implements Runnable {
 	}
 	 
 	
+	
+	
+	//private boolean sendMarkdown
 	
 	
 	
