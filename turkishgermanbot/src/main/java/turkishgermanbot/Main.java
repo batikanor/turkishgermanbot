@@ -25,6 +25,8 @@ public class Main {
 	public static String botUsername;
 	public static long batikansChatId;
 
+	public static String TAUStudentGroupLink;
+	
 	public static String dbDriver;
     public static String dbUser;
     public static String dbPwd;
@@ -53,11 +55,13 @@ public class Main {
 		System.out.println(prop.getProperty("name"));
 	  
 		
-		// If you are helping develop this bot, please ensure that you do not share the following private variables with anyone! (the file including them is to be always ignored while pushing!)
+		// If you are helping develop this bot, please ensure that you do not share the following private variables with anyone! (the file including them is always to be ignored while pushing!)
 		
 		botToken = prop.getProperty("botToken");
-		botUsername = prop.getProperty("botUsername");///< Without '@'
+		botUsername = prop.getProperty("botUsername"); ///< Without '@'
 		batikansChatId = Long.parseLong(prop.getProperty("batikansChatId")); ///< For testing purposes
+		
+		TAUStudentGroupLink = prop.getProperty("TAUStudentGroupLink");
 		
 		dbDriver = prop.getProperty("dbDriver");
 		dbUser = prop.getProperty("dbUser");

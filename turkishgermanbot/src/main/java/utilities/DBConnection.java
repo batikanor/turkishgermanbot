@@ -33,6 +33,35 @@ public class DBConnection {
 		}
 			
 	}
+    public static boolean createUnion(long ownerId, String unionName, String pass) {
+    	
+    	Connection con = connect();
+		PreparedStatement ps;
+
+		
+		try {
+			ps = con.prepareStatement("INSERT INTO UNIONS(OWNERID, UNIONNAME, PASSWORDHASH) VALUES(?, ?, ?)");
+			
+			ps.setLong(1, ownerId);
+			ps.setString(2, unionName);
+			ps.setBytes(3, HelperFunctions.hashPassword(pass));
+			ps.executeUpdate();
+			con.commit();
+
+
+
+
+			con.close();
+			return true;
+	
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+    }
     public static boolean addGroupToUnion(long groupId, String unionName) {
     	
     	Connection con = connect();
@@ -200,6 +229,11 @@ public class DBConnection {
    	FILTERANSWER CLOB(5000) NOT NULL,
     UNIONNAME NVARCHAR(100) NOT NULL,
     PRIMARY KEY (FILTERID))
+    
+    
+    
+
+    
      */
 
     // Table for groups within unions

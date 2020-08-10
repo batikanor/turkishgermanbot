@@ -1,7 +1,8 @@
 package utilities;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
@@ -39,5 +40,13 @@ public class HelperFunctions {
 		}
 		return hash;
 		
+	}
+	
+	public static String stackTraceToString(Exception e) {
+		StringWriter strw = new StringWriter();
+		PrintWriter printw = new PrintWriter(strw);
+		e.printStackTrace(printw);
+		String str = strw.toString(); ///< stack trace as a string
+		return str;
 	}
 }
