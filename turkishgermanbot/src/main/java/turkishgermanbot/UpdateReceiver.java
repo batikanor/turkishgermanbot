@@ -268,9 +268,6 @@ public class UpdateReceiver implements Runnable {
 						
 						
 						
-						
-						// 200 tl muayene ucreti 
-						
 					}
 					
 					else if (msgStr.startsWith("/md")) {
