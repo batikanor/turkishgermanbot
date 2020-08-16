@@ -14,10 +14,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 public class Main {
 	public static final String[] LANGUAGES = { "tr", "en", "de" };
 	public static final String[] COUNTRIES = { "TR", "US", "DE" };
-	public static final String[] DEPARTMENTS = { "Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği",
+	public static final String[] DEPARTMENTS = { 
+			"Bilgisayar Mühendisliği", "Elektrik-Elektronik Mühendisliği",
 			"Endüstri Mühendisliği", "Hukuk",
-			"İktisat", "İnşaat Mühendisliği", "İşletme", "Kültür ve İletişim Bilimleri", "Makine Mühendisliği",
-			"Malzeme Bilimi ve Teknolojileri", "Moleküler Biyoteknoloji", "Siyaset ve Uluslararası İlişkiler", "Mekatronik Mühendisliği"};
+			"İktisat", "İnşaat Mühendisliği", "İşletme", "Kültür ve İletişim Bilimleri",
+			"Makine Mühendisliği", "Malzeme Bilimi ve Teknolojileri", "Moleküler Biyoteknoloji",
+			"Siyaset ve Uluslararası İlişkiler", "Mekatronik Mühendisliği"
+			};
 	
 	
 	

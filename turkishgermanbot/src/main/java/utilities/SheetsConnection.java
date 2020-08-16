@@ -61,7 +61,7 @@ public class SheetsConnection {
 		String timeStamp, field, departmentChoice, otherChoices, ranking, specialQuota, unlikeliness, reason;
 		List<AdayFormResults> afrl = new ArrayList<AdayFormResults>();
 		SheetsConnection.sheetsService = SheetsConnection.getSheetsService();
-		String range = "FormResponses!A1:I500";
+		String range = "FormResponses!A1:I600";
 		ValueRange response = sheetsService.spreadsheets().values()
 				.get(Main.SPREADSHEET_ID, range)
 				.execute();

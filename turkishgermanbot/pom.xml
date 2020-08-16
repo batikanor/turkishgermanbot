@@ -98,6 +98,16 @@
 				</execution>
 			</executions>
 		</plugin>
+		<!-- https://mvnrepository.com/artifact/com.heroku.sdk/heroku-maven-plugin -->
+		<plugin>
+		    <groupId>com.heroku.sdk</groupId>
+		    <artifactId>heroku-maven-plugin</artifactId>
+		    <version>3.0.3</version>
+		    <configuration>
+		    <appName>turkishgermanbot-eclipse-hero</appName>
+		    </configuration>
+		</plugin>
+			
   	</plugins>
   </build>
 </project>

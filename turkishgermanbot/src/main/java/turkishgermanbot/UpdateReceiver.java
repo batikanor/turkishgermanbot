@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -19,6 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.UpdatesHandler;
 
 import objects.AdayFormResults;
 import objects.DiceStats;
@@ -126,18 +128,9 @@ public class UpdateReceiver implements Runnable {
 						//e.printStackTrace();
 						LOGGER.error("Request Failed", e);
 					}
-				
-				
 				}
-				
-				
-
-				
-				
-				
 			}
-			
-			if (updateMsg.hasDice()) {
+			else if (updateMsg.hasDice()) {
 				
 				
 				// For dices always do this
@@ -171,10 +164,6 @@ public class UpdateReceiver implements Runnable {
 				msgStr = updateMsg.getText();
 				
 				
-
-				
-				
-				
 			}
 			if (fromId == chatId) {
 				// Private messages!
@@ -204,70 +193,22 @@ public class UpdateReceiver implements Runnable {
 							
 						}
 		
-						try {
+						sendAdayFormResults(departments);
+					}
+					else if (msgStr.startsWith("/start")) {
+						if (msgStr.contentEquals("/start")) {
+							sendCommands();
+						} else {
+							String arg = msgStr.substring(7);
+							sendAdayFormResults(null);
 						
-							String currentDepartment = null;
-							boolean started = false;
-							List<AdayFormResults> afrl = SheetsConnection.returnAdayFormResults();
-							String toSend = "TAÜ Gayriresmi Aday Bilgi Formu'ndan alınan güncel verilerdir.\nFormu doldurmak veya sıralama tahmini yapmak için @tauaday da yazılanları okuyunuz :)\n";
-							//String toSend = "ZAMAN///ALAN///BOLUM///DIGER_BOLUMLER///SIRALAMA///OZEL_KONTENJAN_DURUMU///USTTEKI_BIR_TERCIHE_YERLESME_OLASILIGI///TERCIH_SEBEBI\n";
-							for (AdayFormResults afr : afrl) {
-								if (started == false) {
-									started = true;
-									departments.add(afr.departmentChoice);
-									currentDepartment = afr.departmentChoice;
-								}
-								else if (!departments.contains(afr.departmentChoice) ) {
-									//System.out.println(toSend.length());
-									sendTxt(toSend);
-									toSend = "\n" + afr.departmentChoice + "\nSIRALAMA : BAŞKA YERE YERLEŞME İHTİMALİ : ÖZEL KONTENJAN DURUMU : TERCİH SEBEBİ\n";
-									departments.add(afr.departmentChoice);
-									currentDepartment = afr.departmentChoice;
-								} else {
-									if (!currentDepartment.contentEquals(afr.departmentChoice)) {
-										continue;
-									}
-								}
-								//toSend += "\n" + afr.timeStamp + "///" + afr.field + "///" + afr.departmentChoice + "///" + afr.otherChoices + "///" + afr.ranking + "///" + afr.specialQuota + "///" + afr.Unlikeliness + "///" + afr.reason;
-								toSend += "\n" + afr.ranking + " : " + afr.Unlikeliness + " : " + afr.specialQuota + " : " + afr.reason.substring(0, 10) + "...";
-								
-							}
-							//System.out.println(toSend.length());
-							sendTxt(toSend);
-							
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
-							LOGGER.error("Request Failed", e);
-						} catch (GeneralSecurityException e) {
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
-							LOGGER.error("Request Failed", e);
 						}
-						
+
 					}
 					
-					else if (msgStr.equals("/start") || msgStr.toLowerCase().equals("help") || msgStr.substring(1).toLowerCase().equals("help")) {
-						//sendTxt(")
-						for (int i = 0; i < Main.LANGUAGES.length; i++) {
-							String lang = Main.LANGUAGES[i];
-							String coun = Main.COUNTRIES[i];
-							sendTxt(lang.toUpperCase() + ": " + ResourceBundle.getBundle("MessagesBundle", new Locale(lang, coun)).getString("whyHere"));
-						}
-						
-						sendTxt("Im still under logical development, hit @batikanor up for ideas.");
-						sendOneButton("TR: TAÜ Aday Grupları", "TAUADAY", null);
-						sendOneButton("EN: TGU English Chatroom", "TGUENGLISH", "t.me/tguenglish");
-						sendOneButton("DE: TDU Deutscher Chatroom", "TDUDEUTSCH", "t.me/tdudeutsch");
-						sendOneButton("ALL: TAÜ/TDU/TGU Public Groups", "TAUPUBLIC", "t.me/turkalman");
-						sendOneButton("ALL: TAÜ/TDU/TGU Private Groups\n(Only students or other university associates are allowed)", "TAUPRIVATE", null);
-						sendOneButton("ALL: Click to see a random number", "Random Number", null);
-					
-						
-						
-						
-						
-						
+					else if (msgStr.toLowerCase().equals("help") || msgStr.substring(1).toLowerCase().equals("help")) {
+						sendCommands();
+	
 					}
 					
 					else if (msgStr.startsWith("/md")) {
@@ -303,20 +244,24 @@ public class UpdateReceiver implements Runnable {
 			
 			} else {
 				// Group chat!
-				
+				if (msgStr.substring(1).startsWith("adaybilgiformu")) {
+					sendOneButton("Form Sonuçlarını Gör","Form Sonuçları" , "telegram.me/turkishgermanbot?start=adaybilgiformu");
+				}
 				// Check if group is in a 'Union' and so on
 				
 			}
-
+			
 		} else if (update.hasCallbackQuery()) {
 			// Handling callback queries altogether
 			CallbackQuery cbq = update.getCallbackQuery();
+			
 			String callData= cbq.getData();
 			updateMsg = cbq.getMessage();
 			msgId = updateMsg.getMessageId();
 			fromId = cbq.getFrom().getId();
+			System.out.println(cbq.getMessage().getText());
 			chatId = updateMsg.getChatId();
-			
+
 			if (callData.contentEquals("Random Number")) {
 			
 				int rnum = RANDOM.nextInt();
@@ -334,9 +279,11 @@ public class UpdateReceiver implements Runnable {
 					LOGGER.error("Request Failed", e);
 				}
 						
+				
 			}
 			
-			if (callData.contentEquals("TAUPRIVATE")) {
+			
+			else if (callData.contentEquals("TAUPRIVATE")) {
 				sendTxt("Öğrenci numaranızı yazabilir misiniz?\n(Alternatif olarak @tausohbet grubuna girip\n'@admins ben öğrenciyim ama numaramı paylaşmak istemiyorum, gruba alır mısınız' benzeri bir şekilde de gruba alınmayı isteyebilirsiniz.");
 			
 				
@@ -344,13 +291,32 @@ public class UpdateReceiver implements Runnable {
 			if (callData.contentEquals("TAUADAY")) {
 				sendTxt("Aday bilgi formu'nu dolduranlarin siralama listesini gormek icin !adaybilgiformu bilgisayar \n(veya hangi bolumseniz adinin bir kismini) yaziniz...");
 				sendTxt("Aday gruplarina erismek icin @tauaday linkini kullanip grubu okuyunuz :)");
+				AnswerCallbackQuery acb = new AnswerCallbackQuery()
+						.setShowAlert(true)
+						.setCallbackQueryId(cbq.getId())
+						.setText("Tuşa bastın.")
+						.setUrl("telegram.me/turkishgermanbot?start=adaybilgiformu");
+			
+				try {
+					tgb.execute(acb);
+				} catch (TelegramApiException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
+
+			
+		} else if (update.hasInlineQuery()) {
+			System.out.println(update.getInlineQuery().toString());
 		}
 		
 
 	}
 	 
+
+
+
 	private SendMessage preParse(String s) {
 		System.out.println(s);
 		String[] lines = s.split(System.getProperty("line.separator"));
@@ -491,6 +457,82 @@ public class UpdateReceiver implements Runnable {
 		}
 		return false;
 	}
+	
+	private boolean sendCommands() {
+		
+		
+		for (int i = 0; i < Main.LANGUAGES.length; i++) {
+			String lang = Main.LANGUAGES[i];
+			String coun = Main.COUNTRIES[i];
+			sendTxt(lang.toUpperCase() + ": " + ResourceBundle.getBundle("MessagesBundle", new Locale(lang, coun)).getString("whyHere"));
+		}
+		
+		
+		sendTxt("Im still under logical development, hit @batikanor up for ideas.");
+		sendOneButton("TR: TAÜ Aday Grupları", "TAUADAY", null);
+		sendOneButton("EN: TGU English Chatroom", "TGUENGLISH", "t.me/tguenglish");
+		sendOneButton("DE: TDU Deutscher Chatroom", "TDUDEUTSCH", "t.me/tdudeutsch");
+		sendOneButton("ALL: TAÜ/TDU/TGU Public Groups", "TAUPUBLIC", "t.me/turkalman");
+		sendOneButton("ALL: TAÜ/TDU/TGU Private Groups\n(Only students or other university associates are allowed)", "TAUPRIVATE", null);
+		sendOneButton("ALL: Click to see a random number", "Random Number", null);
+	
+		return true;
+		
+		
+	}
+	
+	private boolean sendAdayFormResults(List<String> departments) {
+	try {
+		
+		if (departments == null) {
+			departments = new ArrayList<String>();
+		}
+		
+		String currentDepartment = null;
+		boolean started = false;
+		List<AdayFormResults> afrl = SheetsConnection.returnAdayFormResults();
+		String toSend = "TAÜ Gayriresmi Aday Bilgi Formu'ndan alınan güncel verilerdir.\nFormu doldurmak veya sıralama tahmini yapmak için @tauaday da yazılanları okuyunuz :)\n";
+		//String toSend = "ZAMAN///ALAN///BOLUM///DIGER_BOLUMLER///SIRALAMA///OZEL_KONTENJAN_DURUMU///USTTEKI_BIR_TERCIHE_YERLESME_OLASILIGI///TERCIH_SEBEBI\n";
+	
+		int j = 0;
+		for (int i = 0; i < afrl.size(); i++){
+			AdayFormResults afr = afrl.get(i);
+			j++;
+			if (started == false) {
+				started = true;
+				departments.add(afr.departmentChoice);
+				currentDepartment = afr.departmentChoice;
+			}
+			else if (!departments.contains(afr.departmentChoice) ) {
+				//System.out.println(toSend.length());
+				sendTxt(toSend);
+				toSend = "\n" + afr.departmentChoice + "\nSIRALAMA : BAŞKA YERE YERLEŞME İHTİMALİ : ÖZEL KONTENJAN DURUMU : TERCİH SEBEBİ\n";
+				departments.add(afr.departmentChoice);
+				currentDepartment = afr.departmentChoice;
+			} else {
+				if (!currentDepartment.contentEquals(afr.departmentChoice)) {
+					j = 0;
+					continue;
+					
+				}
+			}
+			//toSend += "\n" + afr.timeStamp + "///" + afr.field + "///" + afr.departmentChoice + "///" + afr.otherChoices + "///" + afr.ranking + "///" + afr.specialQuota + "///" + afr.Unlikeliness + "///" + afr.reason;
+			toSend += "\n" + j + ". " + afr.ranking + " : " + afr.Unlikeliness + " : " + afr.specialQuota + " : " + afr.reason.substring(0, 10) + "...";
+			
+		}
+		//System.out.println(toSend.length());
+		sendTxt(toSend);
+		return true;
+	} catch (IOException e) {
+		//e.printStackTrace();
+		LOGGER.error("Request Failed", e);
+	} catch (GeneralSecurityException e) {
+		//e.printStackTrace();
+		LOGGER.error("Request Failed", e);
+	}
+	return false;
+	
+}
 	
 }
 
