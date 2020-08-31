@@ -1,7 +1,7 @@
 package turkishgermanbot;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -50,12 +50,16 @@ public class Main {
 		// ^Because these are not CPU INTENSIVE tasks, these are IO INTENSIVE tasks.
 
 		System.out.println("You are running this code on a system with " + numCores + " cores");
-		
-		String keysFileLoc = "src/main/resources/SECRET_KEYS/Keys.properties";
-		FileInputStream fis = new FileInputStream(keysFileLoc);
+
+	
+
+		InputStream ins = ClassLoader.getSystemResourceAsStream("SECRET_KEYS/Keys.properties");
+	
 		Properties prop = new Properties();
-		prop.load(fis);
-		System.out.println(prop.getProperty("name"));
+		
+		prop.load(ins);
+
+		
 	  
 		
 		// If you are helping develop this bot, please ensure that you do not share the following private variables with anyone! (the file including them is always to be ignored while pushing!)
@@ -69,11 +73,14 @@ public class Main {
 		dbDriver = prop.getProperty("dbDriver");
 		dbUser = prop.getProperty("dbUser");
 		dbPwd = prop.getProperty("dbPwd");
-		dbUrl = prop.getProperty("dbUrl");
+		//String stt = ClassLoader.getSystemResource(prop.getProperty("dbUrl")).toString();
+		//System.out.println(stt);
+		dbUrl = "jdbc:hsqldb:res:" + prop.getProperty("dbUrl");
 	   
 		SPREADSHEET_ID = prop.getProperty("SPREADSHEET_ID");
 		APPLICATION_NAME = prop.getProperty("APPLICATION_NAME");
 		
+		System.out.println("Running code for bot: " + botUsername);
 		
 		// Initialize Api Context
 		ApiContextInitializer.init();

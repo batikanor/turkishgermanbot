@@ -66,6 +66,12 @@
   			<artifactId>maven-assembly-plugin</artifactId>
   			<version>3.3.0</version>
 	        <configuration>
+				<archive>
+					<manifest>
+						<addClasspath>true</addClasspath>
+						<mainClass>turkishgermanbot.Main</mainClass>
+					</manifest>
+				</archive>
           		<descriptorRefs>
             		<descriptorRef>jar-with-dependencies</descriptorRef>
           		</descriptorRefs>
@@ -99,14 +105,14 @@
 			</executions>
 		</plugin>
 		<!-- https://mvnrepository.com/artifact/com.heroku.sdk/heroku-maven-plugin -->
-		<plugin>
+<!-- 		<plugin>
 		    <groupId>com.heroku.sdk</groupId>
 		    <artifactId>heroku-maven-plugin</artifactId>
 		    <version>3.0.3</version>
 		    <configuration>
 		    <appName>turkishgermanbot-eclipse-hero</appName>
 		    </configuration>
-		</plugin>
+		</plugin> -->
 			
   	</plugins>
   </build>

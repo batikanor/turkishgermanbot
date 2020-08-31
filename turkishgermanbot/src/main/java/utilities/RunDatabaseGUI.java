@@ -1,7 +1,7 @@
 package utilities;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.hsqldb.util.DatabaseManagerSwing;
@@ -9,11 +9,14 @@ import org.hsqldb.util.DatabaseManagerSwing;
 
 public class RunDatabaseGUI {
 	public static void main(String[] args) throws IOException {
-		
-		String keysFileLoc = "src/main/resources/SECRET_KEYS/Keys.properties";
-		FileInputStream fis = new FileInputStream(keysFileLoc);
+
+		InputStream ins = ClassLoader.getSystemResourceAsStream("SECRET_KEYS/Keys.properties");
+	
 		Properties prop = new Properties();
-		prop.load(fis);
+		
+		prop.load(ins);
+		
+
 		String dbUrl = prop.getProperty("dbUrl");
 		String dbUser = prop.getProperty("dbUser");
 		String dbPwd = prop.getProperty("dbPwd");

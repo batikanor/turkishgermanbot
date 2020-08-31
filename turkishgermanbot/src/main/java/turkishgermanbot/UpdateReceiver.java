@@ -20,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.generics.UpdatesHandler;
 
 import objects.AdayFormResults;
 import objects.DiceStats;
@@ -199,7 +198,7 @@ public class UpdateReceiver implements Runnable {
 						if (msgStr.contentEquals("/start")) {
 							sendCommands();
 						} else {
-							String arg = msgStr.substring(7);
+							//String arg = msgStr.substring(7);
 							sendAdayFormResults(null);
 						
 						}
