@@ -1,4 +1,4 @@
 # turkishgermanbot
 A bot for the telegram groups of the Turkish-German University at Istanbul
 The project will be active durring summertimes.
-Your ideas and help of any kids are welcome. batikanor.com/contact
+Your ideas and help of any kinds are welcome. batikanor.com/contact
